@@ -1,5 +1,5 @@
 import { model, Schema, Model, Document } from "mongoose";
-import Word, { WordDocument } from "./word";
+import Word, { wordDocument } from "./word";
 import User from "./user";
 const vocaSchema = new Schema({
   title: {
@@ -18,7 +18,7 @@ export interface vocaDocument extends Document {
   title: string;
   amount: number;
   user: string;
-  words: WordDocument[];
+  words: wordDocument[];
 }
 const voca: Model<vocaDocument> = model("voca", vocaSchema);
 export default voca;

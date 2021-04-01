@@ -1,6 +1,6 @@
-import User from "models/user";
+import User from "src/models/user";
 import { Request, Response } from "express";
-import Send from "Module/send";
+import Send from "src/Module/send";
 
 //토큰 발급
 import * as jwt from "jsonwebtoken";
@@ -14,6 +14,7 @@ export const SignUp = async (req: Request, res: Response) => {
     if (result) Send(res, 200, "동일한 아이디가 있습니다.");
     else {
       bcrypt.hash(pw, null, null, async (err, hash) => {
+        if (err) throw err;
         const newuser = new User({
           _id: id,
           password: hash,
@@ -65,7 +66,7 @@ export const Token = async (req: Request, res: Response) => {
   let decoded = jwt.verify(token, "secret-key");
   User.findOne({ _id: decoded.toString() }, (err, res) => {
     if (res) {
-      if (res.admin == true) {
+      if (res.admin) {
         return res
           .status(200)
           .send({ result: "인증성공", state: true, admin: true, data: res });

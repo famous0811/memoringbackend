@@ -9,7 +9,7 @@
     "stop": "pm2 delete ./pm2.json",
     "run": "babel-node ./src/app.js",
     "build": "webpack --config webpack.config.js",
-    "dev": "cross-env nodemon ./src/app.ts",
+    "dev": "cross-env nodemon tsconfig-paths/register ./src/app.ts",
     "buildtsc": "nodemon 0"
   },
   "author": "",
@@ -40,6 +40,7 @@
     "mongoose": "^5.12.2",
     "ts-lint": "^4.5.1",
     "ts-loader": "^8.0.18",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0"
   }
 }
