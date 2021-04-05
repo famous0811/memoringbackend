@@ -4,7 +4,7 @@ import Useractivity from "src/models/useractivity";
 import User from "src/models/user";
 import Send from "src/Module/send";
 
-export const GetPoints = async (req: Request, res: Response) => {
+export const SetPoints = async (req: Request, res: Response) => {
   const { addpoint, _id } = req.body;
 
   User.findById(_id, (err, user) => {
@@ -17,7 +17,20 @@ export const GetPoints = async (req: Request, res: Response) => {
       Useractivity.findById(_id, (err, activity) => {
         if (err) throw err;
         activity.point += addpoint;
+        activity.save();
+        return res.status(200).send({ status: true, result: "up point" });
       });
     }
+  });
+};
+
+export const GetPoints = async (req: Request, res: Response) => {
+  const { _id } = req.body;
+  Useractivity.findById(_id, (err, activity) => {
+    if (err) throw err;
+    return res
+      .status(200)
+      .send({ state: true, result: "user's point", data: activity.point })
+      .end();
   });
 };
