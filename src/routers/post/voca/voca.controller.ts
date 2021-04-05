@@ -19,7 +19,8 @@ export const MakeVoca = async (req: Request, res: Response) => {
       return res.status(200).send({ status: "make voca" });
     })
     .catch((err) => {
-      Send(res, 200, "voca save error" + err);
+      console.error(err);
+      Send(res, 201, "voca save error");
     });
 };
 
@@ -27,7 +28,7 @@ export const GetSomeVoca = async (req: Request, res: Response) => {
   const { title } = req.body;
   Voca.find({ title: title }, async (err, result) => {
     if (err) throw err;
-    if (!result) Send(res, 200, "no voca");
+    if (!result) Send(res, 201, "no voca");
     else {
       return res.status(200).send({ status: result });
     }
@@ -35,4 +36,16 @@ export const GetSomeVoca = async (req: Request, res: Response) => {
 };
 export const GetAllVocas = async (req: Request, res: Response) => {
   return res.status(200).send({ status: Voca.find({}) });
+};
+
+export const fixedVocas = async (req: Request, res: Response) => {
+  const { _id, words, title } = req.body;
+
+  Voca.findOne({ _id: _id }, async (err, result) => {
+    if (err) throw err;
+    result.title = title;
+    result.words = words;
+    result.save();
+    return res.status(200).send({ status: "fixed voca" });
+  });
 };

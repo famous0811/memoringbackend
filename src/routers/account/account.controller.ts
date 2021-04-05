@@ -1,11 +1,13 @@
-import User from "src/models/user";
 import { Request, Response } from "express";
-import Send from "src/Module/send";
-
 //토큰 발급
 import * as jwt from "jsonwebtoken";
 //비밀번호 암호화
 import * as bcrypt from "bcrypt-nodejs";
+
+import User from "src/models/user";
+import Activity from "src/models/useractivity";
+
+import Send from "src/Module/send";
 
 export const SignUp = async (req: Request, res: Response) => {
   const { id, pw, name } = req.body;
@@ -22,13 +24,29 @@ export const SignUp = async (req: Request, res: Response) => {
           icon: "",
           admin: false,
         });
+        const newActivity = new Activity({
+          userId: id,
+          point: 0,
+          mkTip: 0,
+        });
         newuser
           .save()
           .then((data) => {
-            return res.status(200).send({ state: true, data }).end();
+            newActivity
+              .save()
+              .then((data) => {
+                console.log("유저 활동 생성");
+                return res
+                  .status(200)
+                  .send({ state: true, status: "회원가입" })
+                  .end();
+              })
+              .catch((err) => {
+                Send(res, 201, err);
+              });
           })
           .catch((err) => {
-            Send(res, 200, err);
+            Send(res, 201, err);
           });
       });
     }
@@ -51,7 +69,7 @@ export const Login = async (req: Request, res: Response) => {
             .send({ state: true, result: "로그인이 되셨습니다.", token: token })
             .end();
         } else {
-          Send(res, 200, "password is error");
+          Send(res, 201, "password is error");
         }
       });
     }
@@ -61,7 +79,7 @@ export const Login = async (req: Request, res: Response) => {
 export const Token = async (req: Request, res: Response) => {
   const { token } = req.body;
   if (!token) {
-    return Send(res, 200, "인증실패.", false);
+    return Send(res, 201, "인증실패.", false);
   }
   let decoded = jwt.verify(token, "secret-key");
   User.findOne({ _id: decoded.toString() }, (err, res) => {
@@ -75,6 +93,6 @@ export const Token = async (req: Request, res: Response) => {
           .status(200)
           .send({ result: "인증성공", state: true, data: res });
       }
-    } else return Send(res, 200, "인증실패.", false);
+    } else return Send(res, 201, "인증실패.", false);
   });
 };

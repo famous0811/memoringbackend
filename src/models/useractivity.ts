@@ -1,7 +1,10 @@
 import { model, Schema, Model, Document } from "mongoose";
-import User from "./user";
 
 const activitySchema = new Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
   point: {
     type: Number,
     required: true,
