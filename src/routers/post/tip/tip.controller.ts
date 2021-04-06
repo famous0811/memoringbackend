@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 
-import Tip from "src/models/tip";
-import Word from "src/models/word";
-import Activity from "src/models/useractivity";
+import Tip from "../../../models/tip";
+import Word from "../../../models/word";
+import Activity from "../../../models/useractivity";
 
-import Send from "src/Module/send";
+import Send from "../../../Module/send";
 
 export const Maketip = async (req: Request, res: Response) => {
   const { word, text, user } = req.body; //word에 text,mean포함
@@ -55,7 +55,7 @@ export const fixedTip = async (req: Request, res: Response) => {
   return res.status(200).send({ state: true, result: "fixed" });
   // Tip.findOne({ _id: _id }, async (err, result) => {
   //   if (err) throw err;
-  //   if (!result) Send(res, 200, "수정할 tip이 없습니다.");
+  //   if (!result) Send(res, 201, "수정할 tip이 없습니다.");
   //   else {
   //     result.text = text;
   //     result.save();

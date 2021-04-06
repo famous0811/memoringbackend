@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
-import Voca from "src/models/voca";
-import Send from "src/Module/send";
+import Voca from "../../../models/voca";
+import Send from "../../../Module/send";
 
 export const MakeVoca = async (req: Request, res: Response) => {
   const { title, user, words } = req.body;

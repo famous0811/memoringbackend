@@ -15,3 +15,5 @@ router.post("/getallvoca", GetAllVocas);
 router.post("/getsomevoca", GetSomeVoca);
 
 router.post("/fixedvoca", fixedVocas);
+
+export default router;

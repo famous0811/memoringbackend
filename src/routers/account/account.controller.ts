@@ -4,10 +4,10 @@ import * as jwt from "jsonwebtoken";
 //비밀번호 암호화
 import * as bcrypt from "bcrypt-nodejs";
 
-import User from "src/models/user";
-import Activity from "src/models/useractivity";
+import User from "../../models/user";
+import Activity from "../../models/useractivity";
 
-import Send from "src/Module/send";
+import Send from "../../Module/send";
 
 export const SignUp = async (req: Request, res: Response) => {
   const { id, pw, name } = req.body;

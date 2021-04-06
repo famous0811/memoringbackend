@@ -1,6 +1,5 @@
 import { model, Schema, Model, Document } from "mongoose";
-import Word, { wordDocument } from "./word";
-import User from "./user";
+import { wordDocument } from "./word";
 const vocaSchema = new Schema({
   title: {
     type: String,
@@ -10,8 +9,22 @@ const vocaSchema = new Schema({
     type: Number,
     required: true,
   },
-  user: User.name,
-  words: [Word],
+  user: {
+    type: String,
+    required: true,
+  },
+  words: [
+    {
+      text: {
+        type: String,
+        required: true,
+      },
+      mean: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 export interface vocaDocument extends Document {
