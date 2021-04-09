@@ -10,9 +10,9 @@ import Activity from "../../models/useractivity";
 import Send from "../../Module/send";
 
 export const SignUp = async (req: Request, res: Response) => {
-  const { id, pw, name, age, icon } = req.body;
-  // console.log(id, pw, name, age, icon);
-  User.findOne({ _id: id }, async (err, result) => {
+  const { id, pw, name, age } = req.body;
+
+  User.findById(id, async (err, result) => {
     if (err) throw err;
     if (result) Send(res, 201, "동일한 아이디가 있습니다.");
     else {
@@ -22,22 +22,18 @@ export const SignUp = async (req: Request, res: Response) => {
           _id: id,
           password: hash,
           name: name,
-          icon: icon,
           age: age,
-          admin: false,
         });
         const newActivity = new Activity({
           userId: id,
-          point: 0,
-          mkTip: 0,
         });
+
         newuser
           .save()
-          .then((data) => {
+          .then(() => {
             newActivity
               .save()
-              .then((data) => {
-                console.log("유저 활동 생성");
+              .then(() => {
                 return res
                   .status(200)
                   .send({ state: true, result: "회원가입" })
@@ -57,11 +53,13 @@ export const SignUp = async (req: Request, res: Response) => {
 
 export const Login = async (req, res) => {
   const { id, pwd } = req.body;
-  User.findOne({ _id: id }, async (err, result) => {
+
+  User.findById(id, async (err, result) => {
     if (err) throw err;
     if (!result) Send(res, 200, "id is none");
     else {
       bcrypt.compare(pwd, result.password, async (err, value) => {
+        if (err) throw err;
         if (value) {
           const token = jwt.sign({ id: result.id }, "secret-key", {
             expiresIn: 44640,
@@ -80,11 +78,11 @@ export const Login = async (req, res) => {
 
 export const Token = async (req: Request, res: Response) => {
   const { token } = req.body;
-  if (!token) {
-    return Send(res, 201, "인증실패.", false);
-  }
+
   let decoded = jwt.verify(token, "secret-key");
-  User.findOne({ _id: decoded.toString() }, (err, res) => {
+  User.findById(decoded.toString(), (err, res) => {
+    if (err) throw err;
+
     if (res) {
       if (res.admin) {
         return res
@@ -96,5 +94,31 @@ export const Token = async (req: Request, res: Response) => {
           .send({ result: "인증성공", state: true, data: res });
       }
     } else return Send(res, 201, "인증실패.", false);
+  });
+};
+
+export const Resiveacount = async (req: Request, res: Response) => {
+  const { token, pwd, icon, age, name } = req.body;
+  let decoded = jwt.verify(token, "secret-key");
+
+  User.findById(decoded.toString(), async (err, result) => {
+    if (err) throw err;
+    if (!result) Send(res, 201, "no user");
+    else {
+      bcrypt.compare(pwd, result.password, async (err, value) => {
+        if (err) throw err;
+        if (value) {
+          result.icon = icon;
+          result.age = age;
+          result.name = name;
+          result.save();
+          return res
+            .status(200)
+            .send({ state: true, result: "update user data" });
+        } else {
+          Send(res, 201, "password is error");
+        }
+      });
+    }
   });
 };

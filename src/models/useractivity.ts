@@ -8,12 +8,18 @@ const activitySchema = new Schema({
   point: {
     type: Number,
     required: true,
+    default: 0,
     min: 0,
   },
   mkTip: {
     type: Number,
     required: true,
+    default: 0,
     min: 0,
+  },
+  rank: {
+    type: String,
+    default: "bronze",
   },
 });
 

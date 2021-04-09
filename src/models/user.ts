@@ -29,7 +29,8 @@ const userSchema = new Schema({
   age: {
     type: Number,
     required: true,
-    min: 13,
+    min: 0,
+    max: 100,
   },
   admin: {
     type: Boolean,

@@ -8,10 +8,11 @@ export const MakeVoca = async (req: Request, res: Response) => {
 
   const newvoca = new Voca({
     title: title,
+    subtitle: subtitle,
+    amount: words.length,
     user: user,
     words: words,
-    amount: words.length,
-    subtitle: subtitle,
+    tips: tips,
   });
 
   newvoca
@@ -30,19 +31,26 @@ export const GetSomeVoca = async (req: Request, res: Response) => {
   Voca.find({ title: title }, async (err, result) => {
     if (err) throw err;
     if (!result) Send(res, 201, "no voca");
-    else {
-      return res.status(200).send({ status: result });
-    }
+    else return res.status(200).send({ status: result });
   });
 };
+
 export const GetAllVocas = async (req: Request, res: Response) => {
   return res.status(200).send({ status: Voca.find({}) });
 };
 
-export const fixedVocas = async (req: Request, res: Response) => {
-  const { _id, words, title } = req.body;
+export const GetMyVocas = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  Voca.find({ user: id }, async (err, result) => {
+    if (err) throw err;
+    if (!result) Send(res, 201, "no vocas");
+    else return res.status(200).send({ status: result });
+  });
+};
 
-  Voca.findOne({ _id: _id }, async (err, result) => {
+export const FixedVocas = async (req: Request, res: Response) => {
+  const { _id, words, title } = req.body;
+  Voca.findById(_id, async (err, result) => {
     if (err) throw err;
     result.title = title;
     result.words = words;

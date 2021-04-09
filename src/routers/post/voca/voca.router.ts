@@ -3,7 +3,8 @@ import {
   MakeVoca,
   GetSomeVoca,
   GetAllVocas,
-  fixedVocas,
+  FixedVocas,
+  GetMyVocas,
 } from "./voca.controller";
 
 const router = express.Router();
@@ -14,6 +15,8 @@ router.post("/getallvoca", GetAllVocas);
 
 router.post("/getsomevoca", GetSomeVoca);
 
-router.post("/fixedvoca", fixedVocas);
+router.post("/fixedvoca", FixedVocas);
+
+router.post("/getmyvoca", GetMyVocas);
 
 export default router;
