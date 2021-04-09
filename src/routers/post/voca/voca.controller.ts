@@ -4,13 +4,14 @@ import Voca from "../../../models/voca";
 import Send from "../../../Module/send";
 
 export const MakeVoca = async (req: Request, res: Response) => {
-  const { title, user, words } = req.body;
+  const { title, user, words, subtitle, tips } = req.body;
 
   const newvoca = new Voca({
     title: title,
     user: user,
     words: words,
     amount: words.length,
+    subtitle: subtitle,
   });
 
   newvoca

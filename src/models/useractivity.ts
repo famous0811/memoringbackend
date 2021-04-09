@@ -8,10 +8,12 @@ const activitySchema = new Schema({
   point: {
     type: Number,
     required: true,
+    min: 0,
   },
   mkTip: {
     type: Number,
     required: true,
+    min: 0,
   },
 });
 

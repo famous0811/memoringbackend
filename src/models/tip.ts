@@ -1,21 +1,20 @@
 import { model, Schema, Model, Document } from "mongoose";
-import user from "./user";
 import { wordDocument } from "./word";
 
 const tipSchema = new Schema({
   word: {
-    text: {
-      type: String,
-      required: true,
-    },
-    mean: {
-      type: String,
-      required: true,
-    },
+    type: Schema.Types.ObjectId,
+    ref: "word",
   },
   text: {
     type: String,
     required: true,
+    min: 1,
+    max: 40,
+  },
+  img: {
+    type: String,
+    required: false,
   },
   user: {
     type: String,
@@ -27,6 +26,7 @@ export interface tipDocument extends Document {
   word: wordDocument;
   text: string;
   user: string;
+  img?: string;
 }
 
 const tip: Model<tipDocument> = model("tip", tipSchema);

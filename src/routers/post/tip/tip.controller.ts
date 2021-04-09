@@ -7,19 +7,21 @@ import Activity from "../../../models/useractivity";
 import Send from "../../../Module/send";
 
 export const Maketip = async (req: Request, res: Response) => {
-  const { word, text, user } = req.body; //word에 text,mean포함
-
+  const { word, text, user, img } = req.body; //word에 text,mean포함
   const tip = new Tip({
     word: word,
     text: text,
     user: user,
+    img: img,
   });
-  Activity.findOne({ _id: user }, async (err, result) => {
+
+  Activity.findOne({ userId: user }, async (err, result) => {
     if (err) throw err;
     if (!result) {
       console.log("유저가 없는데 tip을 만들고 있다???");
     } else {
       result.mkTip += 1;
+      result.save();
     }
   });
   tip

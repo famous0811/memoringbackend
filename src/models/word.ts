@@ -4,10 +4,14 @@ const wordSchema = new Schema({
   text: {
     type: String,
     required: true,
+    min: 1,
+    max: 50,
   },
   mean: {
     type: String,
     required: true,
+    min: 1,
+    max: 80,
   },
 });
 export interface wordDocument extends Document {

@@ -10,10 +10,11 @@ import Activity from "../../models/useractivity";
 import Send from "../../Module/send";
 
 export const SignUp = async (req: Request, res: Response) => {
-  const { id, pw, name } = req.body;
+  const { id, pw, name, age, icon } = req.body;
+  // console.log(id, pw, name, age, icon);
   User.findOne({ _id: id }, async (err, result) => {
     if (err) throw err;
-    if (result) Send(res, 200, "동일한 아이디가 있습니다.");
+    if (result) Send(res, 201, "동일한 아이디가 있습니다.");
     else {
       bcrypt.hash(pw, null, null, async (err, hash) => {
         if (err) throw err;
@@ -21,7 +22,8 @@ export const SignUp = async (req: Request, res: Response) => {
           _id: id,
           password: hash,
           name: name,
-          icon: "",
+          icon: icon,
+          age: age,
           admin: false,
         });
         const newActivity = new Activity({
@@ -38,7 +40,7 @@ export const SignUp = async (req: Request, res: Response) => {
                 console.log("유저 활동 생성");
                 return res
                   .status(200)
-                  .send({ state: true, status: "회원가입" })
+                  .send({ state: true, result: "회원가입" })
                   .end();
               })
               .catch((err) => {
@@ -53,7 +55,7 @@ export const SignUp = async (req: Request, res: Response) => {
   });
 };
 
-export const Login = async (req: Request, res: Response) => {
+export const Login = async (req, res) => {
   const { id, pwd } = req.body;
   User.findOne({ _id: id }, async (err, result) => {
     if (err) throw err;
