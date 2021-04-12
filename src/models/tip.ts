@@ -1,11 +1,25 @@
 import { model, Schema, Model, Document } from "mongoose";
-import { wordDocument, wordSchema } from "./word";
+import { wordDocument } from "./word";
 
 const tipSchema = new Schema({
+  // word: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "word",
+  //   required: true,
+  // },
   word: {
-    type: Schema.Types.ObjectId,
-    ref: "word",
-    required: true,
+    text: {
+      type: String,
+      required: true,
+      min: 1,
+      max: 50,
+    },
+    mean: {
+      type: String,
+      required: true,
+      min: 1,
+      max: 80,
+    },
   },
   text: {
     type: String,

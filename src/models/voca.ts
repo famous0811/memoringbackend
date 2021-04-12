@@ -24,22 +24,27 @@ const vocaSchema = new Schema({
   },
   words: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "word",
-      min: 1,
-      max: 80,
+      text: {
+        type: String,
+        required: true,
+        min: 1,
+        max: 50,
+      },
+      mean: {
+        type: String,
+        required: true,
+        min: 1,
+        max: 80,
+      },
     },
   ],
   tips: [
     {
       type: Schema.Types.ObjectId,
       ref: "tip",
-      min: 1,
-      max: 80,
     },
   ],
 });
-
 export interface vocaDocument extends Document {
   title: string;
   amount: number;
@@ -47,5 +52,13 @@ export interface vocaDocument extends Document {
   words: wordDocument[];
   tips: tipDocument[];
 }
+
+vocaSchema.path("words").validate(function (value: any) {
+  // console.log(value.length)
+  if (value.length > 80 && value.length < 0) {
+    throw new Error("Assigned person's size can't be greater than 10!");
+  }
+});
+
 const voca: Model<vocaDocument> = model("voca", vocaSchema);
 export default voca;
