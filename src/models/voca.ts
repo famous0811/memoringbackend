@@ -24,24 +24,16 @@ const vocaSchema = new Schema({
   },
   words: [
     {
-      text: {
-        type: String,
-        required: true,
-        min: 1,
-        max: 50,
-      },
-      mean: {
-        type: String,
-        required: true,
-        min: 1,
-        max: 80,
-      },
+      type: Schema.Types.ObjectId,
+      ref: "word",
+      required: true,
     },
   ],
   tips: [
     {
       type: Schema.Types.ObjectId,
       ref: "tip",
+      required: true,
     },
   ],
 });

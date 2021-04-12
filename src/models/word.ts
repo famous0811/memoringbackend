@@ -13,10 +13,15 @@ export const wordSchema = new Schema({
     min: 1,
     max: 80,
   },
+  statustip: {
+    type: Number,
+    required: true,
+  },
 });
 export interface wordDocument extends Document {
   text: string;
   mean: string;
+  statustip: number;
 }
 
 const Word: Model<wordDocument> = model("word", wordSchema);

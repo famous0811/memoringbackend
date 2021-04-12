@@ -2,24 +2,10 @@ import { model, Schema, Model, Document } from "mongoose";
 import { wordDocument } from "./word";
 
 const tipSchema = new Schema({
-  // word: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "word",
-  //   required: true,
-  // },
   word: {
-    text: {
-      type: String,
-      required: true,
-      min: 1,
-      max: 50,
-    },
-    mean: {
-      type: String,
-      required: true,
-      min: 1,
-      max: 80,
-    },
+    type: Schema.Types.ObjectId,
+    ref: "word",
+    required: true,
   },
   text: {
     type: String,
@@ -38,7 +24,7 @@ const tipSchema = new Schema({
 });
 
 export interface tipDocument extends Document {
-  word: wordDocument;
+  word: typeof Schema.Types.ObjectId;
   text: string;
   user: string;
   img?: string;
