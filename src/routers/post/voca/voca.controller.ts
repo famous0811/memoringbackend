@@ -1,18 +1,44 @@
 import { Request, Response } from "express";
 
 import Voca from "../../../models/voca";
+import Word from "../../../models/word";
 import Send from "../../../Module/send";
 
 export const MakeVoca = async (req: Request, res: Response) => {
   const { title, user, words, subtitle, tips } = req.body;
+  const ObjectId = require("mongoose").Types.ObjectId;
+  const ObjectID = require("mongodb").ObjectID;
 
+  var wordarry: typeof ObjectID[];
+
+  for (const word of words) {
+    Word.findOne({ text: word.text }, async (err, result) => {
+      if (err) throw err;
+      if (!result) {
+        const newword = new Word({
+          word,
+          statustip: 0,
+        });
+        newword
+          .save()
+          .then((data) => {
+            wordarry.push(ObjectId(data._id));
+          })
+          .catch((err) => {
+            return Send(res, 201, err);
+          });
+      } else {
+        wordarry.push(ObjectId(result._id));
+      }
+    });
+  }
   const newvoca = new Voca({
     title: title,
     subtitle: subtitle,
     amount: words.length,
     user: user,
-    words: words,
-    tips: tips,
+    words: wordarry,
+    tips: tips.map((data) => ObjectId(data._id)),
   });
 
   newvoca
