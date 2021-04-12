@@ -1,6 +1,6 @@
 import { model, Schema, Model, Document } from "mongoose";
 
-const wordSchema = new Schema({
+export const wordSchema = new Schema({
   text: {
     type: String,
     required: true,

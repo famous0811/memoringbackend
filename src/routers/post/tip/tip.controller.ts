@@ -5,32 +5,48 @@ import Word from "../../../models/word";
 import Activity from "../../../models/useractivity";
 
 import Send from "../../../Module/send";
+function objectId() {
+  // const os = require('os');
+  // const crypto = require('crypto');
+  const d1 = new Date();
+  const secondInHex = (d1.getTime() / 1000).toString(16);
+  // const machineId = crypto.createHash('md5').update(os.hostname()).digest('hex').slice(0, 6);
+  const processId = process.pid.toString(16).slice(0, 4).padStart(4, "0");
+  const counter = process.hrtime()[1].toString(16).slice(0, 6).padStart(6, "0");
 
+  return secondInHex + processId + counter;
+}
 export const Maketip = async (req: Request, res: Response) => {
   const { word, text, user, img } = req.body;
   const tip = new Tip({
-    word: word,
+    word: {
+      _id: objectId(),
+      ...word,
+    },
     text: text,
     user: user,
     img: img,
   });
 
-  Activity.findOne({ userId: user }, async (err, result) => {
-    if (err) throw err;
-    if (!result) {
-      console.log("유저가 없는데 tip을 만들고 있다???");
-    } else {
-      result.mkTip += 1;
-      result.save();
-    }
-  });
+  // Activity.findOne({ userId: user }, async (err, result) => {
+  //   if (err) throw err;
+  //   if (!result) {
+  //     console.log("유저가 없는데 tip을 만들고 있다???");
+  //   } else {
+  //     result.mkTip += 1;
+  //     result.save();
+  //     console.log("유저 있음 ㅋ");
+  //   }
+  // });
   tip
     .save()
-    .then(() => {
+    .then((data) => {
+      console.log(data);
       return res.status(200).send({ status: true });
     })
     .catch((err) => {
-      Send(res, 200, err, false);
+      console.log(err);
+      Send(res, 201, err, false);
     });
 };
 export const GetAllTip = async (req: Request, res: Response) => {
