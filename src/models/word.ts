@@ -21,7 +21,7 @@ export const wordSchema = new Schema({
 export interface wordDocument extends Document {
   text: string;
   mean: string;
-  statustip: number;
+  statustip?: number;
 }
 
 const Word: Model<wordDocument> = model("word", wordSchema);
