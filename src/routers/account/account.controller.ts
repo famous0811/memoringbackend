@@ -56,7 +56,7 @@ export const Login = async (req, res) => {
 
   User.findById(id, async (err, result) => {
     if (err) throw err;
-    if (!result) Send(res, 200, "id is none");
+    if (!result) Send(res, 201, "id is none");
     else {
       bcrypt.compare(pwd, result.password, async (err, value) => {
         if (err) throw err;
@@ -66,7 +66,7 @@ export const Login = async (req, res) => {
           });
           return res
             .status(200)
-            .send({ state: true, result: "로그인이 되셨습니다.", token: token })
+            .send({ state: true, result: "login", token: token })
             .end();
         } else {
           Send(res, 201, "password is error");
@@ -76,24 +76,28 @@ export const Login = async (req, res) => {
   });
 };
 
+//todo
 export const Token = async (req: Request, res: Response) => {
   const { token } = req.body;
 
   let decoded = jwt.verify(token, "secret-key");
-  User.findById(decoded.toString(), (err, res) => {
+  User.findById(decoded.toString(), (err, result) => {
     if (err) throw err;
 
     if (res) {
-      if (res.admin) {
-        return res
-          .status(200)
-          .send({ result: "인증성공", state: true, admin: true, data: res });
+      if (result.admin) {
+        return res.status(200).send({
+          result: "certification",
+          state: true,
+          admin: true,
+          data: result,
+        });
       } else {
         return res
           .status(200)
-          .send({ result: "인증성공", state: true, data: res });
+          .send({ result: "certification", state: true, data: result });
       }
-    } else return Send(res, 201, "인증실패.", false);
+    } else return Send(res, 201, "failed certification", false);
   });
 };
 
