@@ -41,6 +41,7 @@ export interface vocaDocument extends Document {
   title: string;
   amount: number;
   user: string;
+  subtitle: string;
   words: wordDocument[];
   tips: tipDocument[];
 }

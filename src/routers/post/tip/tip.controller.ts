@@ -18,6 +18,7 @@ export const Maketip = async (req: Request, res: Response) => {
     if (err) throw err;
     if (!result) {
       console.log("유저가 없는데 tip을 만들고 있다???");
+      Send(res, 201, "no user activity");
     } else {
       result.mkTip += 1;
       result.save();
@@ -37,7 +38,7 @@ export const Maketip = async (req: Request, res: Response) => {
           objid = ObjectId(data._id);
         })
         .catch((err) => {
-          return Send(res, 201, err);
+          return Send(res, 201, "word make error");
         });
     } else {
       objid = ObjectId(result._id);
@@ -56,18 +57,18 @@ export const Maketip = async (req: Request, res: Response) => {
   tip
     .save()
     .then(() => {
-      return res.status(200).send({ status: true });
+      return res.status(200).send({ status: true, result: "tip save success" });
     })
     .catch((err) => {
       console.error(err);
-      Send(res, 201, err, false);
+      Send(res, 201, err, false, "tip save fail");
     });
 };
 
 export const GetAllTip = async (req: Request, res: Response) => {
   Tip.find({}, async (err, result) => {
     if (err) throw err;
-    if (!result) Send(res, 200, "not tips found");
+    if (!result) Send(res, 201, "not tips found");
     else {
       const tips = result.map((data) => ({
         word: {
@@ -90,7 +91,9 @@ export const GetAllTip = async (req: Request, res: Response) => {
               };
             }, tips);
             if (index + 1 === tips.length) {
-              return res.status(200).send({ status: tips });
+              return res
+                .status(200)
+                .send({ status: true, data: tips, result: "all tips" });
             }
           }
         });
@@ -103,13 +106,15 @@ export const GetSomeTip = async (req: Request, res: Response) => {
   const { text } = req.body;
   Word.findOne({ text: text }, async (err, result) => {
     if (err) throw err;
-    if (!result) Send(res, 201, "등록된 단어가 없습니다.");
+    if (!result) Send(res, 201, "word found failed");
     else {
       Tip.find({ word: result._id }, async (err, vaule) => {
         if (err) throw err;
         if (vaule) {
           return res.status(200).send({
-            status: vaule.map((data) => ({
+            status: true,
+            result: "sometips",
+            data: vaule.map((data) => ({
               _id: data._id,
               text: data.text,
               img: data.img,
@@ -139,7 +144,7 @@ export const FixedTip = async (req: Request, res: Response) => {
           objid = ObjectId(data._id);
         })
         .catch((err) => {
-          return Send(res, 201, err);
+          Send(res, 201, "word save failed");
         });
     } else {
       objid = ObjectId(result._id);
@@ -149,7 +154,6 @@ export const FixedTip = async (req: Request, res: Response) => {
   });
   Tip.findById(_id, async (err, result) => {
     if (err) throw err;
-
     Word.findById(result.word, async (err, result) => {
       if (err) throw err;
       result.statustip -= 1;
@@ -158,7 +162,7 @@ export const FixedTip = async (req: Request, res: Response) => {
   });
   Tip.updateOne({ _id: _id }, { $set: { text: text, word: objid, img: img } })
     .then(() => {
-      return res.status(200).send({ status: "fixed" });
+      return res.status(200).send({ status: true, result: "tips fixed" });
     })
     .catch((err) => {
       Send(res, 201, err);
@@ -172,7 +176,9 @@ export const GetMyTips = async (req: Request, res: Response) => {
     if (!result) return Send(res, 201, "no tips");
     else
       return res.status(200).send({
-        status: result.map((data) => ({
+        status: true,
+        result: "my tips",
+        data: result.map((data) => ({
           _id: data._id,
           text: data.text,
           img: data.img,

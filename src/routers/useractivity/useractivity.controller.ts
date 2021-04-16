@@ -5,7 +5,7 @@ import User from "../../models/user";
 import Send from "../../Module/send";
 
 export const SetPoints = async (req: Request, res: Response) => {
-  const { addpoint, _id } = req.body;
+  const { point, _id } = req.body;
 
   User.findById(_id, (err, user) => {
     if (err) throw err;
@@ -14,12 +14,16 @@ export const SetPoints = async (req: Request, res: Response) => {
 
       return Send(res, 201, "user is undifind");
     } else {
-      Useractivity.findById(_id, (err, activity) => {
-        if (err) throw err;
-        activity.point += addpoint;
-        activity.save();
-        return res.status(200).send({ status: true, result: "up point" });
-      });
+      Useractivity.updateOne({ _id: _id }, { $set: { point: point } })
+        .then(() => {
+          return res.status(200).send({ status: true, result: "set point" });
+        })
+        .catch((err) => {
+          Send(res, 201, "set point error");
+          // return res
+          //   .status(201)
+          //   .send({ status: true, result: "set point error" });
+        });
     }
   });
 };
@@ -28,6 +32,7 @@ export const GetPoints = async (req: Request, res: Response) => {
   const { _id } = req.body;
   Useractivity.findById(_id, (err, activity) => {
     if (err) throw err;
+    if (!activity) Send(res, 201, "user is does not exist");
     return res
       .status(200)
       .send({ state: true, result: "user's point", data: activity.point })

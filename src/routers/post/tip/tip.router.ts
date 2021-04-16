@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/maketip", Maketip);
 router.post("/fixedtip", FixedTip);
 router.post("/getsometip", GetSomeTip);
-router.post("/getalltip", GetAllTip);
+router.get("/getalltip", GetAllTip);
 router.post("/getmytip", GetMyTips);
 
 export default router;

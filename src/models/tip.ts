@@ -1,5 +1,4 @@
 import { model, Schema, Model, Document } from "mongoose";
-import { wordDocument } from "./word";
 
 const tipSchema = new Schema({
   word: {
