@@ -174,16 +174,25 @@ export const GetMyTips = async (req: Request, res: Response) => {
   Tip.find({ user: id }, async (err, result) => {
     if (err) throw err;
     if (!result) return Send(res, 201, "no tips");
-    else
+    else {
       return res.status(200).send({
         status: true,
         result: "my tips",
         data: result.map((data) => ({
           _id: data._id,
-          text: data.text,
-          img: data.img,
+          tip: data.text,
+          src: data.img,
+          word: Word.findById(data.id, async (err, result) => {
+            if (err) throw err;
+            return result.text;
+          }),
+          meaning: Word.findById(data.id, async (err, result) => {
+            if (err) throw err;
+            return result.mean;
+          }),
           user: data.user,
         })),
       });
+    }
   });
 };
